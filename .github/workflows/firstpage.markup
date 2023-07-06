@@ -1,0 +1,9 @@
+*Motivation:* describe the dynamics of a system using the principle of virtual work.
+
+### 4.1 Newton's laws
+In dynamics, the Newtonian view focuses on the physical forces acting on a system and their resulting accelerations and motions. It describes the relationship between forces, mass, and acceleration, providing a **vector-based** representation of how objects move and interact under the influence of external forces. 
+
+### 4.2 Virtual work
+An alternative view of dynamics can utilize work and energy concepts, which leads to a **scalar-based** representation. The principle of virtual work focuses on the concept of virtual displacements, which are hypothetical small displacements applied to the system to analyze its equilibrium conditions. By considering these virtual displacements, the principle of virtual work allows us to express the equilibrium equations in terms of the virtual work done by forces (instead of explicitly considering the forces themselves). 
+
+The guiding principle of this approach is that the total virtual work done by all the internal and external forces acting on a system in equilibrium is zero. Using this guiding principle can help eliminate some forces from the equations of equilibrium and ultimately solve the dynamics of a system. 
