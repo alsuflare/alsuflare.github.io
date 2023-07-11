@@ -1,0 +1,4 @@
+- source: project
+  quarto-pub:
+    - id: 8287984b-5b68-4ba3-b43d-725beb3d54c3
+      url: 'https://greatestq.quarto.pub/dynamics'

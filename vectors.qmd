@@ -1,0 +1,256 @@
+[//]: # latex new commands
+\newcommand\orig[2]{\mathbf{r}_{#1}^{(#2)}}
+\newcommand\bvec[2]{{\mathbf{e}_{#1}^{(#2)}}}
+\newcommand\ddoubleunderline[1]{\underline{\underline{#1}}}
+
+# Kinematics: the description of motion
+*Motivation*: describe the motion of a particle or rigid body in 3D space.     
+
+Kinematics is a fundamental branch of dynamics, focusing on the study of motion without considering the forces. It provides a framework for understanding and analyzing the motion of particles, objects, or systems in three-dimensional space. The motivation behind studying kinematics lies in its ability to describe and predtic motion, leading to applications in the controls or optimization of various systems. In Mechanical Engineering, the concepts play a crucial role in various fiels such as controls, robotics, biomechanics, and etc.
+
+```{python}
+#| echo: false
+import matplotlib.pyplot as plt
+import numpy as np
+e1 = np.array([1,0,0])
+e2 = np.array([0,1,0])
+e3 = np.array([0,0,1])
+
+ax = plt.figure().add_subplot(projection='3d')
+ax.set_axis_off()
+
+# Prepare arrays x, y, z
+theta = np.linspace(0, 2 * np.pi, 100)
+z = np.linspace(1.5,2, 100)
+r = z**2 + 1
+x = r * np.sin(theta)
+y = r * np.cos(theta)
+
+p = [x[80], y[80], z[80]]
+
+ax.plot(x, y, z)
+ax.scatter(*p)
+ax.quiver(*[0, 0, 0], *p, color='k', arrow_length_ratio=0.1)
+ax.quiver(*[0, 0, 0], *e1, color='g',
+arrow_length_ratio=0.2)
+ax.quiver(*[0, 0, 0], *e2, color='g',
+arrow_length_ratio=0.2)
+ax.quiver(*[0, 0, 0], *e3, color='g',arrow_length_ratio=0.2)
+ax.set_xlim([-4, 4])
+ax.set_ylim([-4, 4])
+ax.set_zlim([0, 4])
+plt.show()
+```
+## Introduction to Three Dimensional Linear Algebra
+In the realm of practical applications and real-world scenarios, the study of motion necessitates a comprehensive understanding of three-dimensional space. As such, it becomes imperative to delve into the foundations of three-dimensional linear algebra. This branch of mathematics provides the tools and concepts needed to describe and analyze motion in a three-dimensional context. By grasping the principles of three-dimensional linear algebra, we gain the ability to navigate and comprehend the complexities inherent in the physical world, enabling us to formulate accurate models and predictions pertaining to dynamics. This foundational knowledge forms an integral part of any comprehensive dynamics book, allowing readers to unlock the fundamental principles underlying the motion of objects and systems in three-dimensional space.
+
+### Reference frame
+Motion is described with respect to a reference frame. A reference frame consists of a reference point called the origin and three orthonormal basis vectors. We consider two types of frames:
+
+1. **Fixed frame**, also known as an inertial frame, is a reference frame that remains stationary or moves with a constant velocity relative to an external observer or a point of reference. In a fixed frame, Newton's laws of motion hold true, and the laws of physics are considered to be the same regardless of the frame's position or orientation.
+
+2. **Moving frame**, also known as a non-inertial frame or body-fixed, is a reference frame that is accelerating, rotating, or undergoing any other type of non-uniform motion relative to a fixed reference frame. In a moving frame, the laws of motion are not as straightforward, since additional forces may come into play due to the frame's acceleration or rotation.
+
+
+::: {#def-frame}
+### Reference frame
+A reference frame is a set of basis vectors and an origin. We will always be using a set of three orthonormal basis vectors. Notation:
+$$
+(\bvec{1}{i}, \bvec{2}{i}, \bvec{3}{i}, \orig{A}{i}),
+$$
+or to be concise 
+$$
+(\bvec{1}{i}, \bvec{2}{i}, \bvec{3}{i})
+$$
+:::
+where $\bvec{j}{i}$, $j=1,2,3$ are the orthonormal basis vectors and $\orig{A}{i}$ is the origin, the superscript $i$ is a label to keep track of multiple reference frames. By convention $i=0$ is the fixed (inertial) frame.
+
+Some of the special properties of the orthonormal basis vectors are that 
+$$
+\textbf{e}_{i} \cdot \textbf{e}_{j} = \delta_{ij} 
+$$
+where $i,j=1,2,3$ 
+
+and
+
+$$
+\textbf{e}_1 \times \textbf{e}_2 = \textbf{e}_3
+$$
+$$
+\textbf{e}_2 \times \textbf{e}_3 = \textbf{e}_1
+$$
+$$
+\textbf{e}_3 \times \textbf{e}_1 = \textbf{e}_2
+$$
+These two properties are invariant of whichever frame one uses ("superscript-independent") as long as the three basis vectors are orthonormal. 
+
+### Vectors and Cross Product
+In the context of kinematics, a vector contains information about the relative position and direction. A single vector can be expressed in infinitely many different ways depending on the choice of a reference frame. In other words, "coordinates" are "frame-dependent". 
+
+Suppose we have a three dimensional vector $\textbf{r}$ and a reference frame located at some arbitary origin $\textbf{O}$ with three orthonormal basis vectors $\bvec{1}{0}, \bvec{2}{0}, \bvec{3}{0}$. Then the vector $\textbf{r}$ can be expressed as following
+$$
+\textbf{r} = r_1\bvec{1}{0} + r_2\bvec{2}{0} + r_3\bvec{3}{0} = \begin{pmatrix} \bvec{1}{0} & \bvec{2}{0} & \bvec{3}{0} \end{pmatrix} \begin{pmatrix} r_1 \\ r_2 \\ r_3 \end{pmatrix}
+$$
+where $r_1, r_2, r_3$ are the "coordinates". However, these "coordinates" need not be the same in other reference frames. 
+
+One of the most frequently used vector products in Dynamics is the cross product. Suppose we have some arbitary vectors $\textbf{u}$ and $\textbf{v}$ both expressed with respect to the same reference frame.
+$$
+\textbf{u} = \Sigma_{i=1}^{3}u_i\textbf{e}_i
+$$
+$$
+\textbf{v} = \Sigma_{j=1}^{3}v_j\textbf{e}_j
+$$
+Then the cross product between the two vectors proceed as follows
+$$
+\textbf{u} \times \textbf{v} = (u_1\textbf{e}_1 + u_2\textbf{e}_2 + u_3\textbf{e}_3) \times (v_1\textbf{e}_1 + v_2\textbf{e}_2 + v_3\textbf{e}_3)
+$$
+$$
+= (u_2v_3-u_3v_2)\textbf{e}_1+(u_3v_1-u_1v_3)\textbf{e}_2 + (u_1v_2 - u_2v_1)\textbf{e}_3
+$$
+$$
+= \begin{pmatrix} \textbf{e}_1 & \textbf{e}_2 & \textbf{e}_3 \end{pmatrix} \begin{pmatrix} u_2v_3 - u_3v_2 \\ u_3v_1 - u_1v_3 \\ u_1v_2 - u_2v_1 \end{pmatrix} 
+$$
+$$
+= \begin{pmatrix} \textbf{e}_1 & \textbf{e}_2 & \textbf{e}_3 \end{pmatrix} \begin{pmatrix} 0 & -u_3 & u_2 \\ u_3 & 0 & -u_1 \\ -u_2 & u_1 & 0 \end{pmatrix} \begin{pmatrix} v_1 \\ v_2 \\ v_3 \end{pmatrix}
+$$
+
+Notice that the matrix containing the components of the $\textbf{u}$ is skew-symmetric. In other words, a cross product operation can be seen equivalent to a left matrix multiplication of a skew-symmetric matrix. This is a key result that will be frequently used in subsequent chapters. Hereafter, we denote skew symmetric matrices with a tilde symbol and note that the transpose of a skew symmetric matrix is precisely the negative of itself. 
+$$
+\widetilde{\textbf{u}} = \begin{pmatrix} 0 & -u_3 & u_2 \\ u_3 & 0 & -u_1 \\ -u_2 & u_1 & 0\end{pmatrix} 
+$$
+$$
+\widetilde{\textbf{u}}^T = -\widetilde{\textbf{u}}
+$$
+
+### Rotation Matrices
+::: {#def-Rmatrix}
+### Rotation Matrix
+A rotation matrix is a tool used to describe the transformation between different reference frames. It allows us to convert the coordinates of a point or a vector from one reference frame to another. 
+
+Consider two reference frames: Frame A and Frame B. The rotation matrix, denoted as $\textbf{R}^{(a,b)}$, represents the rotational transformation from Frame A to Frame B. 
+
+Based on the notation that we are using, the rotation matrix from Frame B to Frame A would be written as $\textbf{R}^{(b,a)}$.  
+:::
+$$
+(\bvec{1}{b} \bvec{2}{b} \bvec{3}{b}) = (\bvec{1}{a} \bvec{2}{a} \bvec{3}{a}) \textbf{R}^{(a,b)}
+$$
+or in more compact notation,
+$$
+\ddoubleunderline{\textbf{e}}^{(b)} = \ddoubleunderline{\textbf{e}}^{(a)}\textbf{R}^{(a,b)} 
+$$
+where the double-underline notation indicates a reference frame matrix. 
+
+In this course, all our reference frames consist of orthonormal basis vectors. In other words, the reference frame matrices are orthogonal. Furthermore, 3 dimensional rotation matrices is an element of the SO(3). This leads us to another useful property that we will frequently make use of in subsequent chapters: 
+$$
+(\textbf{R}^{(a,b)})^{-1} = (\textbf{R}^{(a,b)})^T
+$$
+One must be cautious of the fact that $\textbf{R}^{(a,b)}$ and $\textbf{R}^{(b,a)}$ are different rotation matrices. In fact, one can easily show, using the relationship above, that
+$$
+(\textbf{R}^{(a,b)})^{T} = \textbf{R}^{(b,a)}
+$$
+
+## Rate of change of basis vectors
+Kinematics involves the examination of motion, which inherently involves systems that change over time. Understanding the fundamental principles of dynamics is centered around Newton's Second Law. Therefore, it is crucial to have proficiency in expressing how rates of change can be articulated.
+
+So far, we have looked at how reference frames are formulated and how they are related by a rotation matrix namely (FIGURE OF FRAMES HERE)
+$$
+\ddoubleunderline{e}^{(1)} = \ddoubleunderline{e}^{(0)}\textbf{R}^{(0,1)}
+$$
+
+The question one might ask is: 
+what is the rate of change of reference frame (1) with respect to the reference frame (0)? 
+
+In future applications or examples, one might be forced to examine the rate of change with respect to a moving frame. However, as Newton's 2nd Law retains its simplest form in inertial frame, it is logical to first examine how a moving frame changes with respect to a fixed frame in time. 
+
+Taking a time derivative of the above the above expression is a simple application of the chain rule from introductory calculus.
+$$
+\dot{\ddoubleunderline{e}}^{(1)} = \dot{\ddoubleunderline{e}}^{(0)}\boldsymbol{R}^{(0,1)} + \ddoubleunderline{e}^{(1)}\dot{\boldsymbol{R}}^{(0,1)}
+$$
+Notice that the time derivative of the reference frame (0) is zero as it is an inertial frame. Hence, the above equation can be expressed as follows
+$$
+\dot{\ddoubleunderline{e}}^{(1)} = \ddoubleunderline{e}^{(0)}\dot{\boldsymbol{R}}^{(0,1)} = \ddoubleunderline{e}^{(1)}\boldsymbol{R}^{(1,0)}\dot{\boldsymbol{R}}^{(0,1)} = \ddoubleunderline{e}^{(1)}[(\boldsymbol{R}^{(0,1)})^T(\dot{\boldsymbol{R}}^{(0,1)})]
+$$
+The last expression $(\boldsymbol{R}^{(0,1)})^T(\dot{\boldsymbol{R}}^{(0,1)})$ is in fact a very special matrix (one can easily derive the result by manually carrying out the matrix multiplication). It is a skew-symmetric matrix in which the entries are the components of the angular velocity of the reference frame (1) with respect to the reference frame (0).
+$$
+(\boldsymbol{R}^{(0,1)})^T(\dot{\boldsymbol{R}}^{(0,1)}) = \widetilde{\textbf{w}} = \begin{pmatrix} 0 & -w_3 & w_2 \\ w_3 & 0 & -w_1 \\ -w_2 & w_1 & 0 \end{pmatrix}
+$$
+where $w = \begin{pmatrix} w_1 \\ w_2 \\ w_3 \end{pmatrix}$ is the angular velocity of the reference frame (1) with respect to the reference frame (0).
+
+The result above is a powerful tool in a sense that once the rotation matrix or the angular velocity vector is known, one can conveniently compute the rate of change of each frame. Furthermore, one often faces the needs to compute how the basis vectors of the frame evolve in time. The $\widetilde{\omega}$ matrix can be a very convenient tool in such cases. 
+
+### Motivating Example
+(FIGURE) 
+The figure shows two reference frames coinciding initially. The reference frame (1) rotates with certain angular speed $\dot{\theta}$ about the 3-axis. We want to derive an expression for how each axis of the reference frame (1) evolves in time. 
+
+Since the refrence frame (1) is rotating about one of its three axis, the angular velocity vector is simply
+$$
+w = \begin{pmatrix} 0 \\ 0 \\ \dot{\theta} \end{pmatrix}
+$$
+Then, the time derivative of frame (1) is expressed as follows
+$$
+\dot{\ddoubleunderline{e}}^{(1)} = \ddoubleunderline{e}^{(1)} \begin{pmatrix} 0 & -\dot{\theta} & 0 \\ \dot{\theta} & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix}
+$$
+Then, one can deduce from simple matrix multiplication that each axis evolves in time as follows
+$$
+\dot{\textbf{e}}_1^{(1)} = \dot{\theta}\bvec{2}{1}
+$$
+$$
+\dot{\textbf{e}}_2^{(1)} = -\dot{\theta}\bvec{1}{1}
+$$
+$$
+\dot{\textbf{e}}_3^{(1)} = 0
+$$
+On the other hand, one can also find the rotation matrix of the two reference frames. Then, matrix multiplication of the transpose of the rotation matrix with the time derivative of the rotation matrix will yield the same result as above. 
+
+The take-away from this simple motivating example is that regardless of how complex a system may be, one can set up appropriate reference frames, then compute either rotation matrices or angular velocity vectors. From there, one can easily determine how each basis vector evolves in time with respect to the inertial frame. 
+
+## 2D Kinematics: Displacement, Velocity, and Acceleration
+
+The advantages of utilizing the Moving Frame Method lies in its convinience as long as one strictly adheres to its systematic methodology. This includes being cautious of expressing vectors in appropraite frames (or specific basis in that frame), taking time derivatives with respect to the frame of observation (usually inertial), and being aware of the key results that have been introduced above. In this section, we demonstrate how two dimensional displacement, velocity, and acceleration vectors are expressed using the Moving Frame Method. Later on, one can use the same systematic approach to generalize to three dimensios. 
+
+(FIGURE) - Alsu
+
+The figure above shows a particle P, and we would like to derive the expression for the particle's displacement, velocity, and acceleration with respect to the origin O. The reference frame (1) is introduced such that its origin coincides with the origin of frame (0). The 1-axis lies along the radial direction from the origin O to the particle P. Now, suppose the Euclidean distance from the origin O to the particle is $r$. Then, one can express the particle's displacement as follows
+$$
+\textbf{r}_p = r\bvec{1}{1}
+$$
+Obviously, one can choose to express the displacement in frame (0). However, it is evident that the frame (1) is the most convenient choice. Students often get confused with the expression "choice of frame". The displacement expression above is still displacement of the particle measured from an inertial frame. Yet, it is EXPRESSED in frame (1) by our choice. (Although it was mentioend before, we again emphasize that measurement of displacement, velocity, and acceleration in inertial frame becomes crucial in Newton's 2nd Law.)
+Taking time derivatives of the displacement vector yields an expression for velocity and acceleration.
+$$
+\textbf{v}_p = \dot{r}\bvec{1}{1} + r\dot{\theta}\bvec{2}{1}
+$$ 
+$$
+\textbf{a}_p = \ddot{r}\bvec{1}{1} + \dot{r}\dot{\theta}\bvec{2}{1} + (\dot{r}\dot{\theta} + r\ddot{\theta})\bvec{2}{1} - r\dot{\theta}^2\bvec{1}{1} = (\ddot{r}-r\dot{\theta}^2)\bvec{1}{1} + (2\dot{r}\dot{\theta}+r\ddot{\theta})\bvec{2}{1}
+$$
+
+Notice that the two acceleration components in 1-axis direction are radial and centripetal. On the other hand, the two acceleration components in 2-axis direction are coriolis and tangential. Therefore, it is evident that as long as one is consistent with the Moving Frame Method systematic approach, the so-called "fictitious forces" that one learns in introductory mechanics rises naturally. 
+
+::: {.callout-tip}
+## Suggested Exercise
+
+Try expressing the displacement, velocity, and acceleration in (0) frame. Hint: There are multiple ways you can do this!
+:::
+
+### 3D Generalization
+(FIGURE)
+We are now equipped to generalize the above results to 3D. The only difference is that rotation of the particle can be in all three directions. Suppose that we choose to express the displacement of the particle in frame (1). Hence, it's more convenient to use the reference frame matrix and use the angular velocity skew-symmetric matrix to express the time rate of change. We denote the coordinates of the displacement vector in frame (1) as "$r_p^{(1)}$". 
+$$
+\textbf{r}_p = \begin{pmatrix} \bvec{1}{1} & \bvec{2}{1} & \bvec{3}{1} \end{pmatrix} \begin{pmatrix} r_{p1} \\ r_{p2} \\ r_{p3} \end{pmatrix} =  \ddoubleunderline{e}^{(1)}r_p^{(1)}
+$$
+$$
+\textbf{v}_p = \dot{\ddoubleunderline{e}}^{(1)}r_p^{(1)} + \ddoubleunderline{e}^{(1)}\dot{r}_p^{(1)} = \ddoubleunderline{e}^{(1)}\widetilde{\omega}\, r_p^{(1)} + \ddoubleunderline{e}^{(1)}\dot{r}_p^{(1)} = \ddoubleunderline{e}^{(1)}(\omega \times r_p^{(1)}+\dot{r}_p)
+$$
+
+$$
+\textbf{a}_p = \ddoubleunderline{e}^{(1)}\tilde{\omega}\, (\tilde{\omega}\, r_p^{(1)}+\dot{r}_p^{(1)})+ \ddoubleunderline{e}^{(1)}(\dot{\tilde{\omega}}\, r_p^{(1)}+\tilde{\omega} \, \dot{r}_p^{(1)}+\ddot{r}_p^{(1)}) = \ddoubleunderline{e}^{(1)}(\ddot{r}_p^{(1)}+\tilde{\omega}\, \tilde{\omega}\, r_p^{(1)} + 2\tilde{\omega}\, \dot{r}_p^{(1)} + \dot{\tilde{\omega}}\, r_p^{(1)})
+$$
+$$
+=\ddoubleunderline{e}^{(1)}(\ddot{r}_p^{(1)}+\omega \times (\omega \times r_p^{(1)}) + 2\omega \times \dot{r}_p^{(1)}+\dot{\omega} \times r_p^{(1)})
+$$
+See @def-frame.
+
+### Example Problem: Satellite Motion
+Alsu
+
+
+### Example Problem: Rolling without Slipping
